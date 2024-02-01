@@ -1,20 +1,34 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { View, Text, Button } from 'react-native'
+import React, { useEffect } from 'react'
+import { CameraView, useCameraPermissions } from 'expo-camera/next'
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+const CameraNX = () => {
+    const [permisions, requestPermission] = useCameraPermissions()
+
+    useEffect(() => {
+        const result = async () => await requestPermission()
+    }, [])
+
+    if (!permisions?.granted)
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
+                <Text>Permission Denied</Text>
+                <Button
+                    title="request access"
+                    onPress={async () => {
+                        await requestPermission()
+                    }}
+                />
+            </View>
+        )
+
+    return <CameraView style={{ flex: 1 }}></CameraView>
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default CameraNX
